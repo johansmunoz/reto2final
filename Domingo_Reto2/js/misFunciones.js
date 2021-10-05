@@ -134,8 +134,8 @@ function pintarRespuesta2(items) {
 
 function guardarNuevoCliente() {
     let myData = {
-        id: $("#id").val(),
-        name: $("#name").val(),
+        id: $("#id2").val(),
+        name: $("#name2").val(),
         email: $("#email").val(),
         age: $("#age").val(),
     };
@@ -147,8 +147,8 @@ function guardarNuevoCliente() {
         datatype: "JSON",
         success: function (respuesta) {
             $("#resultado").empty();
-            $("#id").val("");
-            $("#name").val("");
+            $("#id2").val("");
+            $("#name2").val("");
             $("#email").val("");
             $("#age").val("");
             informacionCliente();
@@ -159,8 +159,8 @@ function guardarNuevoCliente() {
 
 function cambiarDatos() {
     let myData = {
-        id: $("#id").val(),
-        name: $("#name").val(),
+        id: $("#id2").val(),
+        name: $("#name2").val(),
         email: $("#email").val(),
         age: $("#age").val(),
     };
@@ -174,8 +174,8 @@ function cambiarDatos() {
         datatype: "JSON",
         success: function (respuesta) {
             $("#resultado").empty();
-            $("#id").val("");
-            $("#name").val("");
+            $("#id2").val("");
+            $("#name2").val("");
             $("#email").val("");
             $("#age").val("");
             informacionCliente();
@@ -203,3 +203,94 @@ function borrarCliente(idElemento) {
     });
 };
 
+
+
+function historialMensajes() {
+    $.ajax({
+        url: "https://g0dfc25f9d5bd2a-db202109232119.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/message/message",
+        type: "GET",
+        datatype: "JSON",
+        success: function (respuesta) {
+            console.log(respuesta);
+            pintarRespuesta3(respuesta.items)
+        }
+
+    });
+}
+
+function pintarRespuesta3(items) {
+
+    let myTable = "<table>";
+    for (i = 0; i < items.length; i++) {
+        myTable += "<tr>";
+        myTable += "<td>" + items[i].id + "</td>";
+        myTable += "<td>" + items[i].messagetext + "</td>";
+        myTable += "<td> <button onclick='borrarMensaje(" + items[i].id + ")'>Borrar</button>";
+        myTable += "</tr>";
+    }
+    myTable += "</table>";
+    $("#resultado").append(myTable);
+};
+
+function guardarMensaje() {
+    let myData = {
+        id: $("#id3").val(),
+        messagetext: $("#messagetext").val(),
+    };
+    let dataToSend = JSON.stringify(myData);
+    $.ajax({
+        url: "https://g0dfc25f9d5bd2a-db202109232119.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/message/message",
+        type: "POST",
+        data: myData,
+        datatype: "JSON",
+        success: function (respuesta) {
+            $("#resultado").empty();
+            $("#id3").val("");
+            $("#messagetext").val("");
+            historialMensajes();
+            alert("se ha guardado el dato")
+        }
+    });
+};
+
+function cambiarMensaje() {
+    let myData = {
+        id: $("#id3").val(),
+        messagetext: $("#messagetext").val(),
+    };
+    console.log(myData);
+    let dataToSend = JSON.stringify(myData);
+    $.ajax({
+        url: "https://g0dfc25f9d5bd2a-db202109232119.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/message/message",
+        type: "PUT",
+        data: dataToSend,
+        contentType: "application/JSON",
+        datatype: "JSON",
+        success: function (respuesta) {
+            $("#resultado").empty();
+            $("#id3").val("");
+            $("#messagetext").val("");
+            historialMensajes();
+            alert("se ha Actualizado")
+        }
+    });
+};
+
+function borrarMensaje(idElemento) {
+    let myData = {
+        id: idElemento
+    };
+    let dataToSend = JSON.stringify(myData);
+    $.ajax({
+        url: "https://g0dfc25f9d5bd2a-db202109232119.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/message/message",
+        type: "DELETE",
+        data: dataToSend,
+        contentType: "application/JSON",
+        datatype: "JSON",
+        success: function (respuesta) {
+            $("#resultado").empty();
+            historialMensajes();
+            alert("Se ha Eliminado.")
+        }
+    });
+};
